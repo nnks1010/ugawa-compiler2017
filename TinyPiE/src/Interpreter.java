@@ -13,7 +13,11 @@ public class Interpreter extends InterpreterBase {
 			ASTBinaryExprNode nd = (ASTBinaryExprNode) ndx;
 			int lhsValue = evalExpr(nd.lhs, env);
 			int rhsValue = evalExpr(nd.rhs, env);
-			if (nd.op.equals("+"))
+			if (nd.op.equals("|"))
+				return lhsValue | rhsValue;
+			else if (nd.op.equals("&"))
+				return lhsValue & rhsValue;
+			else if (nd.op.equals("+"))
 				return lhsValue + rhsValue;
 			else if (nd.op.equals("-"))
 				return lhsValue - rhsValue;
