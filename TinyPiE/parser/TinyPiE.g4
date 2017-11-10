@@ -2,7 +2,7 @@
 grammar TinyPiE;
 
 expr: orExpr
-      ;
+	;
 
 orExpr: orExpr OROP andExpr
 	| andExpr
@@ -21,15 +21,17 @@ mulExpr: mulExpr MULOP unaryExpr
 	;
 
 unaryExpr: VALUE			# literalExpr
+	| UNARY	unaryExpr		# unExpr
 	| IDENTIFIER			# varExpr
-	| '(' expr ')'			# parenExpr
+	| '(' expr ')'		# parenExpr
 	;
 
 OROP:  '|';
 ANDOP: '&';
-ADDOP: '+'|'-';
+ADDOP: '+';
 MULOP: '*'|'/';
 
+UNARY: '-'|'~';
 IDENTIFIER: 'x'|'y'|'z';
 VALUE: [0-9]|[1-9][0-9]+;
 WS: [ \t\r\n] -> skip;
