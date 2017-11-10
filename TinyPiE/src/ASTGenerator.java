@@ -7,6 +7,7 @@ import parser.TinyPiEParser.LiteralExprContext;
 import parser.TinyPiEParser.MulExprContext;
 import parser.TinyPiEParser.OrExprContext;
 import parser.TinyPiEParser.ParenExprContext;
+import parser.TinyPiEParser.UnExprContext;
 import parser.TinyPiEParser.VarExprContext;
 
 public class ASTGenerator {	
@@ -42,6 +43,10 @@ public class ASTGenerator {
 			ASTNode lhs = translateExpr(ctx.mulExpr());
 			ASTNode rhs = translateExpr(ctx.unaryExpr());
 			return new ASTBinaryExprNode(ctx.MULOP().getText(), lhs, rhs);
+		} else if (ctxx instanceof UnExprContext) {
+			UnExprContext ctx = (UnExprContext) ctxx;
+			ASTNode hs = translateExpr(ctx.unaryExpr());
+			return new ASTUnaryExprNode(ctx.UNARY().getText(), hs);
 		} else if (ctxx instanceof LiteralExprContext) {
 			LiteralExprContext ctx = (LiteralExprContext) ctxx;
 			int value = Integer.parseInt(ctx.VALUE().getText());
