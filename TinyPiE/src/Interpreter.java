@@ -19,12 +19,19 @@ public class Interpreter extends InterpreterBase {
 				return lhsValue & rhsValue;
 			else if (nd.op.equals("+"))
 				return lhsValue + rhsValue;
-			else if (nd.op.equals("-"))
-				return lhsValue - rhsValue;
 			else if (nd.op.equals("*"))
 				return lhsValue * rhsValue;
 			else if (nd.op.equals("/"))
 				return lhsValue / rhsValue;
+			else
+				throw new Error("Unknown operator: " + nd.op);
+		} else if (ndx instanceof ASTUnaryExprNode) {
+			ASTUnaryExprNode nd = (ASTUnaryExprNode) ndx;
+			int hsValue = evalExpr(nd.operand, env);
+			if (nd.op.equals("-"))
+				return -1 * hsValue;
+			else if (nd.op.equals("~"))
+				return ~hsValue;
 			else
 				throw new Error("Unknown operator: " + nd.op);
 		} else if (ndx instanceof ASTNumberNode) {
