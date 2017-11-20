@@ -13,25 +13,14 @@ public class Interpreter extends InterpreterBase {
 			ASTBinaryExprNode nd = (ASTBinaryExprNode) ndx;
 			int lhsValue = evalExpr(nd.lhs, env);
 			int rhsValue = evalExpr(nd.rhs, env);
-			if (nd.op.equals("|"))
-				return lhsValue | rhsValue;
-			else if (nd.op.equals("&"))
-				return lhsValue & rhsValue;
-			else if (nd.op.equals("+"))
+			if (nd.op.equals("+"))
 				return lhsValue + rhsValue;
+			if (nd.op.equals("-"))
+				return lhsValue - rhsValue;
 			else if (nd.op.equals("*"))
 				return lhsValue * rhsValue;
 			else if (nd.op.equals("/"))
 				return lhsValue / rhsValue;
-			else
-				throw new Error("Unknown operator: " + nd.op);
-		} else if (ndx instanceof ASTUnaryExprNode) {
-			ASTUnaryExprNode nd = (ASTUnaryExprNode) ndx;
-			int hsValue = evalExpr(nd.operand, env);
-			if (nd.op.equals("-"))
-				return -1 * hsValue;
-			else if (nd.op.equals("~"))
-				return ~hsValue;
 			else
 				throw new Error("Unknown operator: " + nd.op);
 		} else if (ndx instanceof ASTNumberNode) {

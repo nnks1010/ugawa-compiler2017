@@ -7,11 +7,9 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import parser.TinyPiELexer;
 import parser.TinyPiEParser;
 import parser.TinyPiEParser.AddExprContext;
-import parser.TinyPiEParser.AndExprContext;
 import parser.TinyPiEParser.ExprContext;
 import parser.TinyPiEParser.LiteralExprContext;
 import parser.TinyPiEParser.MulExprContext;
-import parser.TinyPiEParser.OrExprContext;
 import parser.TinyPiEParser.ParenExprContext;
 import parser.TinyPiEParser.VarExprContext;
 
@@ -19,21 +17,7 @@ public class ParseTreeInterpreter extends InterpreterBase {
 	int evalExpr(ParseTree ctxx, Environment env) {
 		if (ctxx instanceof ExprContext) {
 			ExprContext ctx = (ExprContext) ctxx;
-			return evalExpr(ctx.orExpr(), env);
-		} else if (ctxx instanceof OrExprContext) {
-			OrExprContext ctx = (OrExprContext) ctxx;
-			if (ctx.orExpr() == null)
-				return evalExpr(ctx.andExpr(), env);
-			int lhsValue = evalExpr(ctx.orExpr(), env);
-			int rhsValue = evalExpr(ctx.andExpr(), env);
-			return lhsValue | rhsValue;
-		} else if (ctxx instanceof AndExprContext) {
-			AndExprContext ctx = (AndExprContext) ctxx;
-			if (ctx.andExpr() == null)
-				return evalExpr(ctx.addExpr(), env);
-			int lhsValue = evalExpr(ctx.andExpr(), env);
-			int rhsValue = evalExpr(ctx.addExpr(), env);
-			return lhsValue & rhsValue;
+			return evalExpr(ctx.addExpr(), env);
 		} else if (ctxx instanceof AddExprContext) {
 			AddExprContext ctx = (AddExprContext) ctxx;
 			if (ctx.addExpr() == null)
