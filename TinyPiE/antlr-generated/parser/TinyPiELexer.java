@@ -17,7 +17,8 @@ public class TinyPiELexer extends Lexer {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, ADDOP=3, MULOP=4, IDENTIFIER=5, VALUE=6, WS=7;
+		T__0=1, T__1=2, OROP=3, ANDOP=4, ADDOP=5, SUBOP=6, MULOP=7, IDENTIFIER=8, 
+		VALUE=9, UNARYOP=10, WS=11;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};
@@ -27,14 +28,16 @@ public class TinyPiELexer extends Lexer {
 	};
 
 	public static final String[] ruleNames = {
-		"T__0", "T__1", "ADDOP", "MULOP", "IDENTIFIER", "VALUE", "WS"
+		"T__0", "T__1", "OROP", "ANDOP", "ADDOP", "SUBOP", "MULOP", "IDENTIFIER", 
+		"VALUE", "UNARYOP", "WS"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'('", "')'"
+		null, "'('", "')'", "'|'", "'&'", "'+'", "'-'", null, null, null, "'~'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, "ADDOP", "MULOP", "IDENTIFIER", "VALUE", "WS"
+		null, null, null, "OROP", "ANDOP", "ADDOP", "SUBOP", "MULOP", "IDENTIFIER", 
+		"VALUE", "UNARYOP", "WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -94,18 +97,22 @@ public class TinyPiELexer extends Lexer {
 	public ATN getATN() { return _ATN; }
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2\t(\b\1\4\2\t\2\4"+
-		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\3\2\3\2\3\3\3\3\3\4\3\4"+
-		"\3\5\3\5\3\6\3\6\3\7\3\7\3\7\6\7\37\n\7\r\7\16\7 \5\7#\n\7\3\b\3\b\3\b"+
-		"\3\b\2\2\t\3\3\5\4\7\5\t\6\13\7\r\b\17\t\3\2\7\4\2--//\4\2,,\61\61\3\2"+
-		"\62;\3\2\63;\5\2\13\f\17\17\"\"\2)\2\3\3\2\2\2\2\5\3\2\2\2\2\7\3\2\2\2"+
-		"\2\t\3\2\2\2\2\13\3\2\2\2\2\r\3\2\2\2\2\17\3\2\2\2\3\21\3\2\2\2\5\23\3"+
-		"\2\2\2\7\25\3\2\2\2\t\27\3\2\2\2\13\31\3\2\2\2\r\"\3\2\2\2\17$\3\2\2\2"+
-		"\21\22\7*\2\2\22\4\3\2\2\2\23\24\7+\2\2\24\6\3\2\2\2\25\26\t\2\2\2\26"+
-		"\b\3\2\2\2\27\30\t\3\2\2\30\n\3\2\2\2\31\32\4z|\2\32\f\3\2\2\2\33#\t\4"+
-		"\2\2\34\36\t\5\2\2\35\37\t\4\2\2\36\35\3\2\2\2\37 \3\2\2\2 \36\3\2\2\2"+
-		" !\3\2\2\2!#\3\2\2\2\"\33\3\2\2\2\"\34\3\2\2\2#\16\3\2\2\2$%\t\6\2\2%"+
-		"&\3\2\2\2&\'\b\b\2\2\'\20\3\2\2\2\5\2 \"\3\b\2\2";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2\r8\b\1\4\2\t\2\4"+
+		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
+		"\13\4\f\t\f\3\2\3\2\3\3\3\3\3\4\3\4\3\5\3\5\3\6\3\6\3\7\3\7\3\b\3\b\3"+
+		"\t\3\t\3\n\3\n\3\n\6\n-\n\n\r\n\16\n.\5\n\61\n\n\3\13\3\13\3\f\3\f\3\f"+
+		"\3\f\2\2\r\3\3\5\4\7\5\t\6\13\7\r\b\17\t\21\n\23\13\25\f\27\r\3\2\6\4"+
+		"\2,,\61\61\3\2\62;\3\2\63;\5\2\13\f\17\17\"\"\29\2\3\3\2\2\2\2\5\3\2\2"+
+		"\2\2\7\3\2\2\2\2\t\3\2\2\2\2\13\3\2\2\2\2\r\3\2\2\2\2\17\3\2\2\2\2\21"+
+		"\3\2\2\2\2\23\3\2\2\2\2\25\3\2\2\2\2\27\3\2\2\2\3\31\3\2\2\2\5\33\3\2"+
+		"\2\2\7\35\3\2\2\2\t\37\3\2\2\2\13!\3\2\2\2\r#\3\2\2\2\17%\3\2\2\2\21\'"+
+		"\3\2\2\2\23\60\3\2\2\2\25\62\3\2\2\2\27\64\3\2\2\2\31\32\7*\2\2\32\4\3"+
+		"\2\2\2\33\34\7+\2\2\34\6\3\2\2\2\35\36\7~\2\2\36\b\3\2\2\2\37 \7(\2\2"+
+		" \n\3\2\2\2!\"\7-\2\2\"\f\3\2\2\2#$\7/\2\2$\16\3\2\2\2%&\t\2\2\2&\20\3"+
+		"\2\2\2\'(\4z|\2(\22\3\2\2\2)\61\t\3\2\2*,\t\4\2\2+-\t\3\2\2,+\3\2\2\2"+
+		"-.\3\2\2\2.,\3\2\2\2./\3\2\2\2/\61\3\2\2\2\60)\3\2\2\2\60*\3\2\2\2\61"+
+		"\24\3\2\2\2\62\63\7\u0080\2\2\63\26\3\2\2\2\64\65\t\5\2\2\65\66\3\2\2"+
+		"\2\66\67\b\f\2\2\67\30\3\2\2\2\5\2.\60\3\b\2\2";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
