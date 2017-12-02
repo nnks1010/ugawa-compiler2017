@@ -44,7 +44,7 @@ public class Compiler extends CompilerBase {
 			emitLabel(loopLabel);
 			compileExpr(nd.cond, env);
 			emitRI("cmp", REG_DST, 0);
-			emitJMP("bne", endLabel);
+			emitJMP("beq", endLabel);
 			compileStmt(nd.stmt, env);
 			emitJMP("b", loopLabel);
 			emitLabel(endLabel);
@@ -124,7 +124,7 @@ public class Compiler extends CompilerBase {
 		TinyPiSLexer lexer = new TinyPiSLexer(input);
 		CommonTokenStream token = new CommonTokenStream(lexer);
 		TinyPiSParser parser = new TinyPiSParser(token);
-		ParseTree tree = parser.expr();
+		ParseTree tree = parser.prog();
 		ASTGenerator astgen = new ASTGenerator();
 		ASTNode ast = astgen.translate(tree);
 		Compiler compiler = new Compiler();
