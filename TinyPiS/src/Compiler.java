@@ -48,6 +48,10 @@ public class Compiler extends CompilerBase {
 			compileStmt(nd.stmt, env);
 			emitJMP("b", loopLabel);
 			emitLabel(endLabel);
+		} else if (ndx instanceof ASTPrintStmtNode) {
+			ASTPrintStmtNode nd = (ASTPrintStmtNode) ndx;
+			compileExpr(nd.expr, env);
+			emitCALL("print");
 		} else
 			throw new Error("Unknown expression: "+ndx);
 	}
@@ -118,6 +122,9 @@ public class Compiler extends CompilerBase {
 			emitLabel(v.getLabel());
 			System.out.println("\t.word 0");
 		}
+		System.out.println("hex:");
+		System.out.println("\t.ascii \"00000000\\n\"");
+		System.out.println("\t.equ hexlen, . - hex");
 
 		System.out.println("\t.section .text");
 		System.out.println("\t.global _start");
@@ -126,10 +133,69 @@ public class Compiler extends CompilerBase {
 		compileStmt(prog.stmt, env);
 		System.out.println("\t@ EXITシステムコール");
 		GlobalVariable v = (GlobalVariable) env.lookup("answer");
-		emitLDC(REG_DST, v.getLabel());	// 変数 answer の値を ro (終了コード)に入れる
+		emitLDC(REG_DST, v.getLabel());	// 変数 answer の値を r0 (終了コード)に入れる
 		emitLDR("r0", REG_DST, 0);
-		emitRI("mov", "r7", 1);			// EXIT のシステムコール番号
+		emitRI("mov", REG_R7, 1);			// EXIT のシステムコール番号
 		emitI("swi", 0);
+		
+		subroutinePrint();
+	}
+	
+	public void subroutinePrint() {
+		System.out.println("print:");
+		emitPUSH(REG_DST);
+		emitPUSH(REG_R1);
+		emitPUSH(REG_R2);
+		emitPUSH(REG_R7);
+
+		String loopLabel = freshLabel();
+		String endLoop = freshLabel();
+		String elseLabel = freshLabel();
+		String endIf = freshLabel();
+		emitLDC(REG_R7, "hex");
+		emitRRI("add", REG_R7, REG_R7, 7);
+		emitLabel(loopLabel);
+		emitRI("cmp", REG_DST, 0);
+		emitJMP("beq", endLoop);
+		emitRI("mov", REG_R2, 16);
+		emitRRR("udiv", REG_R1, REG_DST, REG_R2);
+		emitRRR("mul", REG_R2, REG_R1, REG_R2);
+		emitRRR("sub", REG_DST, REG_DST, REG_R2);
+		emitRI("cmp", REG_DST, 10);
+		emitJMP("bpl", elseLabel);
+		emitRRI("add", REG_DST, REG_DST, 48);
+		emitJMP("b", endIf);
+		emitLabel(elseLabel);
+		emitRRI("add", REG_DST, REG_DST, 55);
+		emitLabel(endIf);
+		emitSTRB(REG_DST, REG_R7, -1, true);
+		emitRR("mov", REG_DST, REG_R1);
+		emitJMP("b", loopLabel);
+		emitLabel(endLoop);
+		emitRI("mov", REG_R7, 4);
+		emitRI("mov", REG_DST, 1);
+		emitLDC(REG_R1, "hex");
+		emitLDC(REG_R2, "hexlen");
+		emitI("swi", 0);
+
+		// 文字列の初期化
+		loopLabel = freshLabel();
+		endLoop = freshLabel();
+		emitRI("mov", REG_DST, 48);
+		emitRI("mov", REG_R2, 8);
+		emitLabel(loopLabel);
+		emitRI("cmp", REG_R2, 0);
+		emitJMP("beq", endLoop);
+		emitRRI("sub", REG_R2, REG_R2, 1);
+		emitSTRB(REG_DST, REG_R1, REG_R2);
+		emitJMP("b", loopLabel);
+		emitLabel(endLoop);
+
+		emitPOP(REG_R7);
+		emitPOP(REG_R2);
+		emitPOP(REG_R1);
+		emitPOP(REG_DST);
+		emitRET();
 	}
 
 	public static void main(String[] args) throws IOException {
