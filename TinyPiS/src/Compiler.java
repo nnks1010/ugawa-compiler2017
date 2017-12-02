@@ -58,7 +58,11 @@ public class Compiler extends CompilerBase {
 			emitPUSH(REG_R1);
 			emitRR("mov", REG_R1, REG_DST);
 			compileExpr(nd.rhs, env);
-			if (nd.op.equals("+"))
+			if (nd.op.equals("|"))
+				emitRRR("orr", REG_DST, REG_R1, REG_DST);
+			else if (nd.op.equals("&"))
+				emitRRR("and", REG_DST, REG_R1, REG_DST);
+			else if (nd.op.equals("+"))
 				emitRRR("add", REG_DST, REG_R1, REG_DST);
 			else if (nd.op.equals("-"))
 				emitRRR("sub", REG_DST, REG_R1, REG_DST);
@@ -69,6 +73,15 @@ public class Compiler extends CompilerBase {
 			else
 				throw new Error("Unknwon operator: "+nd.op);
 			emitPOP(REG_R1);
+		} else if (ndx instanceof ASTUnaryExprNode) {
+			ASTUnaryExprNode nd = (ASTUnaryExprNode) ndx;
+			compileExpr(nd.operand, env);
+			if (nd.op.equals("-"))
+				emitRRI("rsb", REG_DST, REG_DST, 0);
+			else if (nd.op.equals("~"))
+				emitRR("mvn", REG_DST, REG_DST);
+			else
+				throw new Error("Unknwon operator: "+nd.op);
 		} else if (ndx instanceof ASTNumberNode) {
 			ASTNumberNode nd = (ASTNumberNode) ndx;
 			emitLDC(REG_DST, nd.value);
