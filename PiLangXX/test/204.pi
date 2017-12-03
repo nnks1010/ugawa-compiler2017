@@ -1,0 +1,33 @@
+function main() {
+    var x;
+    x = 5;
+    while(x) {
+        print 1;
+        while(x) {
+            print 2;
+            while(x) {
+                print 3;
+                while(x) {
+                    print 4;
+                    while(x) {
+                        print 5;
+                        break;
+                        print 255;
+                    }
+                    print 4;
+                    break;
+                    print 255;
+                }
+                print 3;
+                break;
+                print 255;
+            }
+            print 2;
+            break;
+            print 255;
+        }
+        print 1;
+        break;
+        print 255;
+    }
+}

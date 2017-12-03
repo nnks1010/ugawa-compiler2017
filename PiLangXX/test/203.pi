@@ -1,0 +1,17 @@
+function main() {
+    var x; var y;
+    x = 22;
+    y = 22;
+    print 0 || 1;
+    print 1 || 0;
+    print 0 || 0;
+    print 1 || 1;
+    print 1 && 0;
+    print 0 && 1;
+    print 0 && 0;
+    print 1 && 1;
+    print !1;
+    print !0;
+    print !x;
+    return x || y && !x;
+}
