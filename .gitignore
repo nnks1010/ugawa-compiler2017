@@ -25,3 +25,5 @@ bin/
 .*
 !.gitignore
 *.o
+
+sample/
