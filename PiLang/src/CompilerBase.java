@@ -4,6 +4,8 @@ public class CompilerBase {
 	/* レジスタ */
 	static final String REG_DST = "r0";  /* return value */
 	static final String REG_R1  = "r1";
+	static final String REG_R2  = "r2";
+	static final String REG_R7  = "r7";
 	static final String REG_FP  = "r11";
 	static final String REG_SP  = "sp";
 	static final String REG_LR  = "r14";
@@ -38,6 +40,18 @@ public class CompilerBase {
 	}
 	void emitSTR(String rs, String rd, int offset) {
 		System.out.println("\tstr "+rs+", ["+rd+", #"+offset+"]");
+	}
+	void emitSTRB(String rs, String rd, int offset) {
+		System.out.println("\tstrb "+rs+", ["+rd+", #"+offset+"]");
+	}
+	void emitSTRB(String rs, String rd1, String rd2) {
+		System.out.println("\tstrb "+rs+", ["+rd1+", "+rd2+"]");
+	}
+	void emitSTRB(String rs, String rd, int offset, boolean update) {
+		if (update)
+			System.out.println("\tstrb "+rs+", ["+rd+"], #"+offset);
+		else
+			System.out.println("\tstrb "+rs+", ["+rd+", #"+offset+"]");
 	}
 	void emitLDR(String rd, String rs, int offset) {
 		System.out.println("\tldr "+rd+", ["+rs+", #"+offset+"]");
