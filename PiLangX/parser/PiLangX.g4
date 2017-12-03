@@ -17,10 +17,19 @@ varDecls: ('var' IDENTIFIER ';')*
 stmt: '{' stmt* '}'							# compoundStmt
 	| IDENTIFIER '=' expr ';'				# assignStmt
 	| 'if' '(' expr ')' stmt 'else' stmt	# ifStmt
-	| 'while' '(' expr ')' stmt				# whileStmt
+	| 'while' '(' expr ')' whileChildStmt   # whileStmt
     | 'print' expr ';'                      # printStmt
 	| 'return' expr ';'						# returnStmt
 	;
+
+whileChildStmt: '{' whileChildStmt* '}'		# whileCompoundStmt
+	| IDENTIFIER '=' expr ';'				# whileAssignStmt
+	| 'if' '(' expr ')' whileChildStmt 'else' whileChildStmt	# whileIfStmt
+	| 'while' '(' expr ')' whileChildStmt   # whileInWhileStmt
+    | 'print' expr ';'                      # whilePrintStmt
+	| 'return' expr ';'						# whileReturnStmt
+	| BREAKOP						# breakStmt
+    ;
 
 expr: lorExpr
     ;
@@ -69,6 +78,7 @@ args: /* no arguments */
 	| expr ( ',' expr )*
 	;
 
+BREAKOP: 'break;';
 LOROP: '||';
 LANDOP: '&&';
 OROP: '|';

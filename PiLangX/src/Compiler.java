@@ -43,7 +43,7 @@ public class Compiler extends CompilerBase {
 		emitPUSH(REG_R1);
 		emitRRI("sub", REG_SP, REG_SP, nd.varDecls.size() * 4);
 		for (ASTNode stmt: nd.stmts)
-			compileStmt(stmt, epilogueLabel, env);
+			compileStmt(stmt, epilogueLabel, null, env);
 		emitRI("mov", REG_DST, 0);	// return がなかった場合の戻り値 0
 		emitLabel(epilogueLabel);
 		System.out.println("\t@ epilogue");
@@ -54,11 +54,11 @@ public class Compiler extends CompilerBase {
 		emitRET();
 	}
 	
-	void compileStmt(ASTNode ndx, String epilogueLabel, Environment env) {
+	void compileStmt(ASTNode ndx, String epilogueLabel, String endLoopLabel, Environment env) {
 	    if (ndx instanceof ASTCompoundStmtNode) {
 			ASTCompoundStmtNode nd = (ASTCompoundStmtNode) ndx;
 			for (ASTNode child: nd.stmts)
-				compileStmt(child, epilogueLabel, env);
+				compileStmt(child, epilogueLabel, endLoopLabel, env);
 		} else if (ndx instanceof ASTAssignStmtNode) {
 			ASTAssignStmtNode nd = (ASTAssignStmtNode) ndx;
 			Variable var = env.lookup(nd.var);
@@ -83,10 +83,10 @@ public class Compiler extends CompilerBase {
 			compileExpr(nd.cond, env);
 			emitRI("cmp", REG_DST, 0);
 			emitJMP("beq", elseLabel);
-			compileStmt(nd.thenClause, epilogueLabel, env);
+			compileStmt(nd.thenClause, epilogueLabel, endLoopLabel, env);
 			emitJMP("b", endLabel);
 			emitLabel(elseLabel);
-			compileStmt(nd.elseClause, epilogueLabel, env);
+			compileStmt(nd.elseClause, epilogueLabel, endLoopLabel, env);
 			emitLabel(endLabel);
 		} else if (ndx instanceof ASTWhileStmtNode) {
 			ASTWhileStmtNode nd = (ASTWhileStmtNode) ndx;
@@ -96,7 +96,7 @@ public class Compiler extends CompilerBase {
 			compileExpr(nd.cond, env);
 			emitRI("cmp", REG_DST, 0);
 			emitJMP("beq", endLabel);
-			compileStmt(nd.stmt, epilogueLabel,env);
+			compileStmt(nd.stmt, epilogueLabel, endLabel, env);
 			emitJMP("b", loopLabel);
 			emitLabel(endLabel);
 		} else if (ndx instanceof ASTReturnStmtNode) {
@@ -107,6 +107,8 @@ public class Compiler extends CompilerBase {
 			ASTPrintStmtNode nd = (ASTPrintStmtNode) ndx;
 			compileExpr(nd.expr, env);
 			emitCALL("_print_r0");
+		} else if (ndx instanceof ASTBreakStmtNode) {
+			emitJMP("b", endLoopLabel);
 		} else
 			throw new Error("Unknown expression: "+ndx);
 	}

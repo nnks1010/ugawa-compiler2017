@@ -128,6 +128,15 @@ class ASTPrintStmtNode extends ASTNode {
 	}
 }
 
+class ASTBreakStmtNode extends ASTNode {
+	ASTBreakStmtNode() {
+	}
+	@Override
+	public String toString() {
+		return "break;";
+	}
+}
+
 class ASTBinaryExprNode extends ASTNode {
 	String op;
 	ASTNode lhs;

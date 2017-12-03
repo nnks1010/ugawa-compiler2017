@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import parser.PiLangXParser.AddExprContext;
 import parser.PiLangXParser.AndExprContext;
 import parser.PiLangXParser.AssignStmtContext;
+import parser.PiLangXParser.BreakStmtContext;
 import parser.PiLangXParser.CallExprContext;
 import parser.PiLangXParser.CmpExprContext;
 import parser.PiLangXParser.CompoundStmtContext;
@@ -25,6 +26,13 @@ import parser.PiLangXParser.ReturnStmtContext;
 import parser.PiLangXParser.StmtContext;
 import parser.PiLangXParser.UnExprContext;
 import parser.PiLangXParser.VarExprContext;
+import parser.PiLangXParser.WhileAssignStmtContext;
+import parser.PiLangXParser.WhileChildStmtContext;
+import parser.PiLangXParser.WhileCompoundStmtContext;
+import parser.PiLangXParser.WhileIfStmtContext;
+import parser.PiLangXParser.WhileInWhileStmtContext;
+import parser.PiLangXParser.WhilePrintStmtContext;
+import parser.PiLangXParser.WhileReturnStmtContext;
 import parser.PiLangXParser.WhileStmtContext;
 
 public class ASTGenerator {
@@ -84,7 +92,7 @@ public class ASTGenerator {
         } else if (ctxx instanceof WhileStmtContext) {
             WhileStmtContext ctx = (WhileStmtContext) ctxx;
             ASTNode cond = translate(ctx.expr());
-            ASTNode stmt = translate(ctx.stmt());
+            ASTNode stmt = translate(ctx.whileChildStmt());
             return new ASTWhileStmtNode(cond, stmt);
         } else if (ctxx instanceof ReturnStmtContext) {
         	ReturnStmtContext ctx = (ReturnStmtContext) ctxx;
@@ -94,6 +102,40 @@ public class ASTGenerator {
 			PrintStmtContext ctx = (PrintStmtContext) ctxx;
 			ASTNode expr = translate(ctx.expr());
 			return new ASTPrintStmtNode(expr);
+		} else if (ctxx instanceof WhileCompoundStmtContext) {
+            WhileCompoundStmtContext ctx = (WhileCompoundStmtContext) ctxx;
+            ArrayList<ASTNode> whileChildStmts = new ArrayList<ASTNode>();
+            for (WhileChildStmtContext t: ctx.whileChildStmt()) {
+                ASTNode n = translate(t);
+                whileChildStmts.add(n);
+            }
+            return new ASTCompoundStmtNode(whileChildStmts);
+        } else if (ctxx instanceof WhileAssignStmtContext) {
+            WhileAssignStmtContext ctx = (WhileAssignStmtContext) ctxx;
+            String var = ctx.IDENTIFIER().getText();
+            ASTNode expr = translate(ctx.expr());
+            return new ASTAssignStmtNode(var, expr);
+        } else if (ctxx instanceof WhileIfStmtContext) {
+            WhileIfStmtContext ctx = (WhileIfStmtContext) ctxx;
+            ASTNode cond = translate(ctx.expr());
+            ASTNode thenClause = translate(ctx.whileChildStmt(0));
+            ASTNode elseClause = translate(ctx.whileChildStmt(1));
+            return new ASTIfStmtNode(cond, thenClause, elseClause);
+        } else if (ctxx instanceof WhileInWhileStmtContext) {
+            WhileInWhileStmtContext ctx = (WhileInWhileStmtContext) ctxx;
+            ASTNode cond = translate(ctx.expr());
+            ASTNode stmt = translate(ctx.whileChildStmt());
+            return new ASTWhileStmtNode(cond, stmt);
+        } else if (ctxx instanceof WhileReturnStmtContext) {
+        	WhileReturnStmtContext ctx = (WhileReturnStmtContext) ctxx;
+        	ASTNode expr = translate(ctx.expr());
+        	return new ASTReturnStmtNode(expr);
+        } else if (ctxx instanceof WhilePrintStmtContext) {
+			WhilePrintStmtContext ctx = (WhilePrintStmtContext) ctxx;
+			ASTNode expr = translate(ctx.expr());
+			return new ASTPrintStmtNode(expr);
+		}  else if (ctxx instanceof BreakStmtContext) {
+			return new ASTBreakStmtNode();
 		} else if (ctxx instanceof ExprContext) {
             ExprContext ctx = (ExprContext) ctxx;
             return translate(ctx.lorExpr());
