@@ -45,7 +45,13 @@ public class Interpreter extends InterpreterBase {
 			ASTBinaryExprNode nd = (ASTBinaryExprNode) ndx;
 			int lhsValue = evalExpr(nd.lhs, env);
 			int rhsValue = evalExpr(nd.rhs, env);
-			if (nd.op.equals("|"))
+			boolean lhsBool = lhsValue != 0;
+			boolean rhsBool = rhsValue != 0;
+			if (nd.op.equals("||"))
+				return lhsBool || rhsBool? 1:0;
+			else if (nd.op.equals("&&"))
+				return lhsBool && rhsBool? 1:0;
+			else if (nd.op.equals("|"))
 				return lhsValue | rhsValue;
 			else if (nd.op.equals("&"))
 				return lhsValue & rhsValue;
@@ -78,6 +84,8 @@ public class Interpreter extends InterpreterBase {
 				return -1 * operand;
 			else if (nd.op.equals("~"))
 				return ~operand;
+			else if (nd.op.equals("!"))
+				return operand == 0? 1:0;
 			else
 				throw new Error("Unknown operator: " + nd.op);
 		} else if (ndx instanceof ASTNumberNode) {

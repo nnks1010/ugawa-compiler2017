@@ -14,7 +14,15 @@ stmt: '{' stmt* '}'                         # compoundStmt
     | 'print' expr ';'                      # printStmt
     ;
 
-expr: orExpr
+expr: lorExpr
+    ;
+
+lorExpr: lorExpr LOROP landExpr
+    | landExpr
+    ;
+
+landExpr: landExpr LANDOP orExpr
+    | orExpr
     ;
 
 orExpr: orExpr OROP andExpr
@@ -48,6 +56,8 @@ unaryExpr: VALUE                            # literalExpr
     | '(' expr ')'                          # parenExpr
     ;
 
+LOROP: '||';
+LANDOP: '&&';
 OROP: '|';
 ANDOP: '&';
 EQUOP: '=='|'!=';
@@ -55,7 +65,7 @@ CMPOP: '<'|'<='|'>'|'>=';
 ADDOP: '+';
 SUBOP: '-';
 MULOP: '*'|'/';
-UNARYOP: '~';
+UNARYOP: '~'|'!';
 
 IDENTIFIER: [_a-zA-Z][_a-zA-Z0-9]*;
 VALUE: [0-9]|[1-9][0-9]+;
