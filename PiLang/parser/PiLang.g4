@@ -45,6 +45,6 @@ args: /* no arguments */
 ADDOP: '+'|'-';
 MULOP: '*'|'/';
 
-IDENTIFIER: 'x'|'y'|'z'|'main';
-VALUE: [0-9]+;
+IDENTIFIER: [_a-zA-Z][_a-zA-Z0-9]*;
+VALUE: [0-9]|[1-9][0-9]+;
 WS: [ \t\r\n] -> skip;
