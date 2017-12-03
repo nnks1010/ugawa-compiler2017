@@ -34,6 +34,13 @@ public class Compiler extends CompilerBase {
 		emitRR("mov", REG_FP, REG_SP);
 		emitPUSH(REG_LR);
 		emitPUSH(REG_R1);
+		emitRI("mov", REG_R1, 0);
+		for (int i = 0; i < nd.varDecls.size(); i++) {
+			int offset = -4 * (i + 3);
+			emitSTR(REG_R1, REG_FP, offset);
+		}
+		emitPOP(REG_R1);
+		emitPUSH(REG_R1);
 		emitRRI("sub", REG_SP, REG_SP, nd.varDecls.size() * 4);
 		for (ASTNode stmt: nd.stmts)
 			compileStmt(stmt, epilogueLabel, env);
