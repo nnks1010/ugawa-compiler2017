@@ -142,7 +142,7 @@ class ASTContinueStmtNode extends ASTNode {
 	}
 	@Override
 	public String toString() {
-		return "(BreakStmt continue;)";
+		return "(ContinueStmt continue;)";
 	}
 }
 

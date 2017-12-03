@@ -19,6 +19,7 @@ public class Interpreter extends InterpreterBase {
 	Environment globalEnv;
 	ASTProgNode prog;
 	boolean breakFlag;
+	boolean continueFlag;
 	ASTFunctionNode lookupFunction(String name) {
 		for (ASTFunctionNode func: prog.funcDecls)
 			if (func.name.equals(name))
@@ -55,6 +56,8 @@ public class Interpreter extends InterpreterBase {
 		ReturnValue returnValue = null;
 		if (breakFlag)
 			return returnValue;
+		if (continueFlag)
+			return returnValue;
 		if (ndx instanceof ASTCompoundStmtNode) {
 			ASTCompoundStmtNode nd = (ASTCompoundStmtNode) ndx;
 			for (ASTNode child: nd.stmts) {
@@ -89,6 +92,10 @@ public class Interpreter extends InterpreterBase {
 				if (returnValue != null)
 					return returnValue;
 			}
+			if (continueFlag) {
+				continueFlag = false;
+				returnValue = evalStmt(nd, env);
+			}
 			breakFlag = false;
 		} else if (ndx instanceof ASTReturnStmtNode) {
 			ASTReturnStmtNode nd = (ASTReturnStmtNode) ndx;
@@ -99,6 +106,8 @@ public class Interpreter extends InterpreterBase {
 			System.out.println(String.format("%08X", evalExpr(nd.expr, env)));
 		} else if (ndx instanceof ASTBreakStmtNode) {
 			breakFlag = true;
+		} else if (ndx instanceof ASTContinueStmtNode) {
+			continueFlag = true;
 		} else {
 			throw new Error("Unknown statement: "+ndx);
 		}
@@ -182,6 +191,7 @@ public class Interpreter extends InterpreterBase {
 		globalEnv = new Environment();
 		prog = (ASTProgNode) ast;
 		breakFlag = false;
+		continueFlag = false;
 		for (String varName: prog.varDecls) {
 			if (globalEnv.lookup(varName) != null)
 				throw new Error("Variable redefined: "+varName);

@@ -28,7 +28,8 @@ whileChildStmt: '{' whileChildStmt* '}'		# whileCompoundStmt
 	| 'while' '(' expr ')' whileChildStmt   # whileInWhileStmt
     | 'print' expr ';'                      # whilePrintStmt
 	| 'return' expr ';'						# whileReturnStmt
-	| BREAKOP						# breakStmt
+	| 'break;'						# breakStmt
+	| 'continue;'						# continueStmt
     ;
 
 expr: lorExpr
@@ -78,7 +79,6 @@ args: /* no arguments */
 	| expr ( ',' expr )*
 	;
 
-BREAKOP: 'break;';
 LOROP: '||';
 LANDOP: '&&';
 OROP: '|';
