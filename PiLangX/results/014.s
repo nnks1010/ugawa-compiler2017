@@ -21,6 +21,9 @@ z:
 	mov r11, sp
 	str r14, [sp, #-4]!
 	str r1, [sp, #-4]!
+	mov r1, #0
+	ldr r1, [sp], #4
+	str r1, [sp, #-4]!
 	sub sp, sp, #0
 	ldr r0, =#1
 	ldr r1, =_Pi_var_x
@@ -40,6 +43,10 @@ main:
 	str r11, [sp, #-4]!
 	mov r11, sp
 	str r14, [sp, #-4]!
+	str r1, [sp, #-4]!
+	mov r1, #0
+	str r1, [r11, #-12]
+	ldr r1, [sp], #4
 	str r1, [sp, #-4]!
 	sub sp, sp, #4
 	ldr r0, =#100

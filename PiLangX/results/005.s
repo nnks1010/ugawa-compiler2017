@@ -17,6 +17,9 @@ z:
 	mov r11, sp
 	str r14, [sp, #-4]!
 	str r1, [sp, #-4]!
+	mov r1, #0
+	ldr r1, [sp], #4
+	str r1, [sp, #-4]!
 	sub sp, sp, #0
 	ldr r0, =#10
 	b L0
@@ -33,6 +36,9 @@ main:
 	str r11, [sp, #-4]!
 	mov r11, sp
 	str r14, [sp, #-4]!
+	str r1, [sp, #-4]!
+	mov r1, #0
+	ldr r1, [sp], #4
 	str r1, [sp, #-4]!
 	sub sp, sp, #0
 	bl z

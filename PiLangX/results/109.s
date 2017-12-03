@@ -17,6 +17,13 @@ main:
 	mov r11, sp
 	str r14, [sp, #-4]!
 	str r1, [sp, #-4]!
+	mov r1, #0
+	str r1, [r11, #-12]
+	str r1, [r11, #-16]
+	str r1, [r11, #-20]
+	str r1, [r11, #-24]
+	ldr r1, [sp], #4
+	str r1, [sp, #-4]!
 	sub sp, sp, #16
 	ldr r0, =#1
 	str r0, [r11, #-12]

@@ -18,20 +18,19 @@ main:
 	str r14, [sp, #-4]!
 	str r1, [sp, #-4]!
 	mov r1, #0
+	str r1, [r11, #-12]
+	str r1, [r11, #-16]
 	ldr r1, [sp], #4
 	str r1, [sp, #-4]!
-	sub sp, sp, #0
-	ldr r0, =#100
-	str r1, [sp, #-4]!
-	mov r1, r0
-	ldr r0, =#99
-	sub r0, r1, r0
-	ldr r1, [sp], #4
-	b L0
+	sub sp, sp, #8
+	ldr r0, [r11, #-12]
+	bl _print_r0
+	ldr r0, [r11, #-16]
+	bl _print_r0
 	mov r0, #0
 L0:
 	@ epilogue
-	add sp, sp, #0
+	add sp, sp, #8
 	ldr r1, [sp], #4
 	ldr r14, [sp], #4
 	ldr r11, [sp], #4

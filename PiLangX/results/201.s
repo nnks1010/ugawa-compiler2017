@@ -21,13 +21,32 @@ main:
 	ldr r1, [sp], #4
 	str r1, [sp, #-4]!
 	sub sp, sp, #0
-	ldr r0, =#100
+	ldr r0, =#1
 	str r1, [sp, #-4]!
 	mov r1, r0
-	ldr r0, =#99
+	ldr r0, =#1
+	rsb r0, r0, #0
 	sub r0, r1, r0
 	ldr r1, [sp], #4
-	b L0
+	bl _print_r0
+	ldr r0, =#1
+	str r1, [sp, #-4]!
+	mov r1, r0
+	ldr r0, =#1
+	and r0, r1, r0
+	ldr r1, [sp], #4
+	bl _print_r0
+	ldr r0, =#1
+	str r1, [sp, #-4]!
+	mov r1, r0
+	ldr r0, =#1
+	orr r0, r1, r0
+	ldr r1, [sp], #4
+	bl _print_r0
+	ldr r0, =#2
+	mvn r0, r0
+	mvn r0, r0
+	bl _print_r0
 	mov r0, #0
 L0:
 	@ epilogue
