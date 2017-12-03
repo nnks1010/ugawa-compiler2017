@@ -7,19 +7,23 @@ do
     java -jar compiler.jar < $i > results/${name%.pi}.s
 done
 
+echo docker run -it -v ~/workspace/raspberry/pilang/PiLang/:/pilang/ pilang /bin/bash -c
 docker run -it -v ~/workspace/raspberry/pilang/PiLang/:/pilang/ pilang /bin/bash -c '
+echo cd pilang
 cd pilang
 printf execute...
 for i in results/*.s
 do
     as ${i} -o ${i%.s}.o
     ld ${i%.s}.o -o a.out
-    ./a.out
-    echo $? > ${i%.s}.ans
+    ./a.out > ${i%.s}.ans
+    echo $? >> ${i%.s}.ans
 done
-printf done\n
+printf "done\n"
 
+echo rm -f results/*.o a.out
 rm -f results/*.o a.out
+echo docker exit
 exit
 '
 

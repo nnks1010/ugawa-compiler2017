@@ -10,5 +10,4 @@ compiler.jar: src $(COMPILER_MF)
 	jar cvfm $@ $(COMPILER_MF) -C bin .
 
 clean:
-	rm -r ./bin
-	rm interpreter.jar
+	rm interpreter.jar compiler.jar
