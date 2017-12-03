@@ -115,6 +115,31 @@ public class Compiler extends CompilerBase {
 				emitRRR("orr", REG_DST, REG_R1, REG_DST);
 			else if (nd.op.equals("&"))
 				emitRRR("and", REG_DST, REG_R1, REG_DST);
+			else if (nd.op.equals("==")) {
+				emitRR("cmp", REG_DST, REG_R1);
+				emitRI("moveq", REG_DST, 1);
+				emitRI("movne", REG_DST, 0);
+			} else if (nd.op.equals("!=")) {
+				emitRR("cmp", REG_DST, REG_R1);
+				emitRI("moveq", REG_DST, 0);
+				emitRI("movne", REG_DST, 1);
+			} else if (nd.op.equals("<")) {
+				emitRR("cmp", REG_DST, REG_R1);
+				emitRI("movmi", REG_DST, 1);
+				emitRI("movge", REG_DST, 0);
+			} else if (nd.op.equals("<=")) {
+				emitRR("cmp", REG_DST, REG_R1);
+				emitRI("movle", REG_DST, 1);
+				emitRI("movgt", REG_DST, 0);
+			} else if (nd.op.equals(">")) {
+				emitRR("cmp", REG_DST, REG_R1);
+				emitRI("movgt", REG_DST, 1);
+				emitRI("movle", REG_DST, 0);
+			} else if (nd.op.equals(">=")) {
+				emitRR("cmp", REG_DST, REG_R1);
+				emitRI("movge", REG_DST, 1);
+				emitRI("movmi", REG_DST, 0);
+			}
 			else if (nd.op.equals("+"))
 				emitRRR("add", REG_DST, REG_R1, REG_DST);
 			else if (nd.op.equals("-"))

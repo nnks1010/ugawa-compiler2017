@@ -28,7 +28,15 @@ orExpr: orExpr OROP andExpr
     | andExpr
     ;
 
-andExpr: andExpr ANDOP addExpr
+andExpr: andExpr ANDOP equExpr
+    | equExpr
+    ;
+
+equExpr: equExpr EQUOP cmpExpr
+    | cmpExpr
+    ;
+
+cmpExpr: cmpExpr CMPOP addExpr
     | addExpr
     ;
 
@@ -54,6 +62,8 @@ args: /* no arguments */
 
 OROP: '|';
 ANDOP: '&';
+EQUOP: '=='|'!=';
+CMPOP: '<'|'<='|'>'|'>=';
 ADDOP: '+';
 SUBOP: '-';
 MULOP: '*'|'/';

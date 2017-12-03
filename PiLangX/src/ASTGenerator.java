@@ -7,7 +7,9 @@ import parser.PiLangXParser.AddExprContext;
 import parser.PiLangXParser.AndExprContext;
 import parser.PiLangXParser.AssignStmtContext;
 import parser.PiLangXParser.CallExprContext;
+import parser.PiLangXParser.CmpExprContext;
 import parser.PiLangXParser.CompoundStmtContext;
+import parser.PiLangXParser.EquExprContext;
 import parser.PiLangXParser.ExprContext;
 import parser.PiLangXParser.FuncDeclContext;
 import parser.PiLangXParser.IfStmtContext;
@@ -103,10 +105,24 @@ public class ASTGenerator {
 		} else if (ctxx instanceof AndExprContext) {
 			AndExprContext ctx = (AndExprContext) ctxx;
 			if (ctx.andExpr() == null)
-				return translate(ctx.addExpr());
+				return translate(ctx.equExpr());
 			ASTNode lhs = translate(ctx.andExpr());
-			ASTNode rhs = translate(ctx.addExpr());
+			ASTNode rhs = translate(ctx.equExpr());
 			return new ASTBinaryExprNode(ctx.ANDOP().getText(), lhs, rhs);
+		} else if (ctxx instanceof EquExprContext) {
+			EquExprContext ctx = (EquExprContext) ctxx;
+			if (ctx.equExpr() == null)
+				return translate(ctx.cmpExpr());
+			ASTNode lhs = translate(ctx.equExpr());
+			ASTNode rhs = translate(ctx.cmpExpr());
+			return new ASTBinaryExprNode(ctx.EQUOP().getText(), lhs, rhs);
+		} else if (ctxx instanceof CmpExprContext) {
+			CmpExprContext ctx = (CmpExprContext) ctxx;
+			if (ctx.cmpExpr() == null)
+				return translate(ctx.addExpr());
+			ASTNode lhs = translate(ctx.cmpExpr());
+			ASTNode rhs = translate(ctx.addExpr());
+			return new ASTBinaryExprNode(ctx.CMPOP().getText(), lhs, rhs);
 		} else if (ctxx instanceof AddExprContext) {
             AddExprContext ctx = (AddExprContext) ctxx;
             if (ctx.addExpr() == null)
